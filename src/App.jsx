@@ -4,9 +4,10 @@ import AlertModal from "./components/AlertModal";
 
 function App() {
   const wordPackage = [
-    "BAN TUYEN NGON DOC LAP",
+    "CACH MANG VO SAN",
     "LOI KEU GOI TOAN QUOC KHANG CHIEN",
     "NHAT KY TRONG TU",
+    "CON DIA",
   ];
 
   const [selectedPack, setSelectedPack] = useState(null);
@@ -17,6 +18,8 @@ function App() {
     message: "",
     open: false,
   });
+
+  const [confirmReveal, setConfirmReveal] = useState(false);
 
   useEffect(() => {
     setWordList([]);
@@ -67,6 +70,19 @@ function App() {
     setGuess(null);
   };
 
+  const showResult = () => {
+    let newList = [...wordList];
+    newList.map((word) => {
+      word.visible = true;
+    });
+    setWordList(newList);
+    setAlert({
+      status: true,
+      message: "Result: " + selectedPack,
+      open: true,
+    });
+  };
+
   return (
     <div className="w-full min-h-screen flex flex-col items-center justify-start gap-4 bg-teal-950 text-white">
       <button
@@ -75,7 +91,7 @@ function App() {
           !selectedPack && "invisible"
         }`}
       >
-        Reset
+        Back
       </button>
       <p className="text-[4em] font-black pb-16">WHEEL OF FORTUNE</p>
       {selectedPack === null ? (
@@ -93,7 +109,7 @@ function App() {
         </div>
       ) : (
         <div>
-          <div className="w-full flex flex-wrap items-center justify-center gap-4">
+          <div className="w-full flex flex-wrap items-center justify-center gap-4 px-4">
             {wordList.map((word, index) => {
               return (
                 <span
@@ -102,7 +118,15 @@ function App() {
                     word.char.match(" ") ? "border-teal-600" : "border-white"
                   } min-w-24 min-h-24 flex items-center justify-center text-white font-black text-[3em] ${
                     word.char.match(" ") ? "bg-white" : "bg-teal-900"
-                  }`}
+                  } cursor-pointer`}
+                  onClick={() => {
+                    let newList = [...wordList];
+                    const chosenWord = newList[index];
+                    if (!chosenWord.visible) {
+                      chosenWord.visible = true;
+                    } else chosenWord.visible = false;
+                    setWordList(newList);
+                  }}
                 >
                   {word.visible ? word.char : ""}
                 </span>
@@ -114,13 +138,37 @@ function App() {
             <input
               type="text"
               maxLength={1}
+              disabled={
+                !wordList.some(
+                  (word) => !word.char.match(" ") && word.visible === false
+                )
+              }
               value={guess ? guess : ""}
               onChange={(e) => {
                 setGuess(e.target.value.toUpperCase());
               }}
               onBlur={() => checkGuess()}
-              className="text-[3em] font-black text-black w-[2em] rounded-xl text-center"
+              className="text-[3em] font-black text-black w-[2em] rounded-xl text-center disabled:cursor-not-allowed disabled:bg-gray-300"
             />
+          </div>
+          <div className="w-full flex flex-col items-center justify-center gap-4 my-16">
+            <button
+              disabled={!confirmReveal}
+              onClick={() => {
+                showResult();
+              }}
+              className="px-8 py-2 rounded-xl bg-green-700 hover:bg-green-800 duration-200 font-bold text-[2em] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              SHOW RESULT
+            </button>
+            <div className="w-full flex items-center justify-center gap-2">
+              <input
+                type="checkbox"
+                checked={confirmReveal}
+                onChange={() => setConfirmReveal(!confirmReveal)}
+              />
+              <p>This action will reveal the answer of the round.</p>
+            </div>
           </div>
         </div>
       )}
