@@ -4,10 +4,10 @@ import AlertModal from "./components/AlertModal";
 
 function App() {
   const wordPackage = [
-    "CACH MANG VO SAN",
-    "LOI KEU GOI TOAN QUOC KHANG CHIEN",
-    "NHAT KY TRONG TU",
-    "CON DIA",
+    "OK BE KEO",
+    "TOT NGHIEP CAI CHOA GI",
+    "CAM ON VI DA DEN",
+    "DU KIEN MAI CA PHE OK KO",
   ];
 
   const [selectedPack, setSelectedPack] = useState(null);
